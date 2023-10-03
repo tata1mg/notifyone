@@ -2,6 +2,8 @@ import subprocess
 import json
 import os
 from utils import extract_values
+from sys import platform
+
 
 def setup_core():
     print("\n Setting up Notification Core \n")
@@ -23,6 +25,14 @@ def setup_core():
         _core_config = json.load(c)
         _core_queue_names = extract_values(_core_config, "QUEUE_NAME")
         _port = str(_core_config.get("PORT") or 6562)
+        if platform.lower() == 'darwin':
+            _core_config['DB_CONNECTIONS']['connections']['default']['credentials']['host'] = 'host.docker.internal'
+            _core_config['SUBSCRIBE_NOTIFICATION_STATUS_UPDATES']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:4566'
+            _core_config['DISPATCH_NOTIFICATION_REQUEST']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:4566'
+            _core_config['NOTIFICATION_REQUEST']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:4566'
+            _core_config['REDIS_CACHE_HOSTS']['default']['REDIS_HOST'] = 'host.docker.internal'
+            with open('config.json', 'w') as f:
+                json.dump(_core_config, f)
 
     # create local stack queues
     for _q in _core_queue_names:

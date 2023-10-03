@@ -2,6 +2,7 @@ import subprocess
 import json
 import os
 from utils import extract_values
+from sys import platform
 
 
 def setup_gateway():
@@ -20,10 +21,15 @@ def setup_gateway():
         print(str(_res.stderr.decode('utf-8')))
         exit(1)
 
-    with open('config.json') as c:
+    with open('config.json', 'r') as c:
         _gateway_config = json.load(c)
         _gateway_port = str(_gateway_config.get("PORT") or 6561)
         _gateway_queue_names = extract_values(_gateway_config, "QUEUE_NAME")
+        if platform.lower() == 'darwin':
+            _gateway_config['NOTIFICATION_SERVICE']['HOST'] = 'host.docker.internal'
+            _gateway_config['TRIGGER_NOTIFICATIONS']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:4566'
+            with open('config.json', 'w') as f:
+                json.dump(_gateway_config, f)
 
     # create local stack queues
     for _q in _gateway_queue_names:
