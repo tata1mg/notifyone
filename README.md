@@ -28,6 +28,24 @@ It lets you define an event in the system and configure different channels of no
 - Highly configurable - Add/Remove operators(service providers) for different channels with ease, change priority between operators, define custom priority logic to handle rare business use cases, all this with just a few clicks.
 - Fault-tolerant - usages queuing as and when needed for a fault-tolerant architecture. Provides automatic switching between different operators for a channel based on their performance.
 
+## Providers Supported
+Currently, we support below list of providers for different channels. More providers will be added with the future releases.
+
+If you wish to have a provider for a channel that is not in the list, feel free to integrate it and raise a PR.
+#### :envelope: EMAIL
+- [x] SparkPost
+- [x] AWS SES
+
+#### :memo: SMS
+- [x] Sms Country
+- [x] Plivo
+
+#### :iphone: PUSH
+- [x] FCM
+
+#### :pager: WhatsApp
+- [x] Interkt
+
 ## The Architecture
 NotifyOne uses a highly scalable, fault-tolerant architecture. It runs as a group of services that, combined together, work for the best performance.
 
@@ -50,6 +68,9 @@ The NotifyOne system has been seen as an integration of it's four core component
   </picture>
   </a>
 </div>
+
+- The architecture makes it easy to introduce a new channel or integrate with new providers.
+- Gateway, Core and Handlers can be scaled independently based on needs.
 
 ## 🚀 Getting Started
 #### Tools & Technologies you need before getting started 
