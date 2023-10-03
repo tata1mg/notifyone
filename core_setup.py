@@ -10,7 +10,7 @@ def setup_core():
                           capture_output=True)
     if _res.returncode != 0:
         print(str(_res.stderr.decode('utf-8')))
-        exit(1)
+        #exit(1)
 
     os.chdir('notifyone-core')
 
@@ -34,8 +34,8 @@ def setup_core():
         else:
             pass
 
-    _stat = subprocess.run(['docker rm --force notifyone_core'], shell=True)
-    _stat = subprocess.run(["docker image rm notifyone_core"], shell=True)
+    _stat = subprocess.run(['docker rm --force notifyone-core'], shell=True)
+    _stat = subprocess.run(["docker image rm notifyone-core"], shell=True)
 
     _res = subprocess.run(['docker build . --tag notifyone-core --build-arg SERVICE_NAME=notifyone_core'],
                           shell=True, capture_output=True)
@@ -49,4 +49,12 @@ def setup_core():
         print(str(_res.stderr.decode('utf-8')))
         exit(1)
 
-    print("\n Notification gateway setup completed \n")
+    _res = subprocess.run(["docker exec -i $(docker ps | grep notifyone-core | awk '{print $1}') python3 database.py upgrade "],
+                          shell=True, capture_output=True)
+    if _res.returncode != 0:
+        print("\nError in DB upgrade\n")
+        print(_res.stderr.decode('utf-8'))
+    else:
+        pass
+
+    print("\n Notification Core setup completed \n")

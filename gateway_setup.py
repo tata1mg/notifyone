@@ -11,7 +11,7 @@ def setup_gateway():
                           capture_output=True)
     if _res.returncode != 0:
         print(str(_res.stderr.decode('utf-8')))
-        exit(1)
+        #exit(1)
 
     os.chdir('notifyone-gateway')
 

@@ -16,7 +16,7 @@ if _res.returncode != 0:
     exit(1)
 
 _stat = subprocess.run(['docker rm --force postgres_notify'], shell=True)
-_res = subprocess.run(["docker run  --detach -p5432:5432 -e POSTGRES_PASSWORD='password' -e POSTGRES_USER=postgres --name postgres_notify postgres:14.5"],  shell=True, capture_output=True)
+_res = subprocess.run(["docker run  --detach -p5432:5432 -e POSTGRES_PASSWORD='postgres' -e POSTGRES_USER=postgres --name postgres_notify postgres:14.5"],  shell=True, capture_output=True)
 if _res.returncode != 0:
     print(str(_res.stderr.decode('utf-8')))
     exit(1)
