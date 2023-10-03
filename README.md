@@ -28,7 +28,7 @@ It lets you define an event in the system and configure different channels of no
 - Highly configurable - Add/Remove operators(service providers) for different channels with ease, change priority between operators, define custom priority logic to handle rare business use cases, all this with just a few clicks.
 - Fault-tolerant - usages queuing as and when needed for a fault-tolerant architecture. Provides automatic switching between different operators for a channel based on their performance.
 
-## Providers Supported
+## :ballot_box_with_check: Providers Supported
 Currently, we support below list of providers for different channels. More providers will be added with the future releases.
 
 If you wish to have a provider for a channel that is not in the list, feel free to integrate it and raise a PR.
