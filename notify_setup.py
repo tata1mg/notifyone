@@ -2,6 +2,7 @@ import subprocess
 import os
 from gateway_setup import setup_gateway
 from core_setup import setup_core
+from handler_setup import setup_handler
 
 _docker_check_res = subprocess.run(['docker info'], shell=True, capture_output=True)
 if _docker_check_res.returncode != 0:
@@ -59,5 +60,8 @@ setup_core()
 
 os.chdir('../')
 
+setup_handler()
+
+print('Notification System Setup Complete')
 
 
