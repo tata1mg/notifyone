@@ -1,10 +1,8 @@
 <div align="center">
-  <a href="https://novu.co" target="_blank">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/2233092/213641039-220ac15f-f367-4d13-9eaf-56e79433b8c1.png">
     <img src="https://raw.githubusercontent.com/tata1mg/notifyone/master/media/logo.png" width="300" alt="Logo"/>
   </picture>
-  </a>
 </div>
 <h1 align="center">An open-source, event-based notification system for everyone</h1>
 <div align="center">
@@ -61,12 +59,10 @@ The NotifyOne system has been seen as an integration of it's four core component
 #### # architecture diagram 
 
 <div align="center">
-  <a href="https://novu.co" target="_blank">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/2233092/213641039-220ac15f-f367-4d13-9eaf-56e79433b8c1.png">
     <img src="https://raw.githubusercontent.com/tata1mg/notifyone/master/media/architecture.png" width="1000" alt="Logo"/>
   </picture>
-  </a>
 </div>
 
 - The architecture makes it easy to introduce a new channel or integrate with new providers.
