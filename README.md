@@ -1,5 +1,6 @@
 <div align="center">
   <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/tata1mg/notifyone/master/media/logo.png">
     <img src="https://raw.githubusercontent.com/tata1mg/notifyone/master/media/logo.png" width="300" alt="Logo"/>
   </picture>
 </div>
@@ -59,6 +60,7 @@ The NotifyOne system has been seen as an integration of it's four core component
 
 <div align="center">
   <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/tata1mg/notifyone/master/media/architecture.png">
     <img src="https://raw.githubusercontent.com/tata1mg/notifyone/master/media/architecture.png" width="1000" alt="Logo"/>
   </picture>
 </div>
