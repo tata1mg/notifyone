@@ -4,11 +4,13 @@ import os
 from utils import extract_values
 from sys import platform
 
+from components.gateway import SOURCE as GATEWAY_SOURCE
+
 
 def setup_gateway():
-    print("\n Setting up Notification gateway \n")
+    print("\nSetting up notifyone-gateway.....\n")
 
-    _res = subprocess.run(["git clone https://github.com/tata1mg/notifyone-gateway.git"], shell=True,
+    _res = subprocess.run(["git clone {}".format(GATEWAY_SOURCE)], shell=True,
                           capture_output=True)
     if _res.returncode != 0:
         print(str(_res.stderr.decode('utf-8')))
@@ -23,10 +25,10 @@ def setup_gateway():
 
     with open('config.json', 'r') as c:
         _gateway_config = json.load(c)
-        _gateway_port = str(_gateway_config.get("PORT") or 6561)
+        _gateway_port = str(_gateway_config.get("PORT") or 9401)
         _gateway_queue_names = extract_values(_gateway_config, "QUEUE_NAME")
         if platform.lower() == 'darwin':
-            _gateway_config['NOTIFICATION_SERVICE']['HOST'] = 'host.docker.internal'
+            _gateway_config['NOTIFICATION_SERVICE']['HOST'] = 'http://host.docker.internal:9402'
             _gateway_config['TRIGGER_NOTIFICATIONS']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:4566'
             with open('config.json', 'w') as f:
                 json.dump(_gateway_config, f)
@@ -57,4 +59,4 @@ def setup_gateway():
         print(str(_res.stderr.decode('utf-8')))
         exit(1)
 
-    print("\n Notification gateway setup completed \n")
+    print("\nnotifyone-gateway setup completed\n")

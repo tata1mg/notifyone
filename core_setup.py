@@ -4,11 +4,13 @@ import os
 from utils import extract_values
 from sys import platform
 
+from components.core import SOURCE as CORE_SOURCE
+
 
 def setup_core():
-    print("\n Setting up Notification Core \n")
+    print("\nSetting up notifyone-core....\n")
 
-    _res = subprocess.run(["git clone https://github.com/tata1mg/notifyone-core.git"], shell=True,
+    _res = subprocess.run(["git clone {}".format(CORE_SOURCE)], shell=True,
                           capture_output=True)
     if _res.returncode != 0:
         print(str(_res.stderr.decode('utf-8')))
@@ -24,7 +26,7 @@ def setup_core():
     with open('config.json') as c:
         _core_config = json.load(c)
         _core_queue_names = extract_values(_core_config, "QUEUE_NAME")
-        _port = str(_core_config.get("PORT") or 6562)
+        _port = str(_core_config.get("PORT") or 9402)
         if platform.lower() == 'darwin':
             _core_config['DB_CONNECTIONS']['connections']['default']['credentials']['host'] = 'host.docker.internal'
             _core_config['SUBSCRIBE_NOTIFICATION_STATUS_UPDATES']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:4566'
@@ -67,4 +69,4 @@ def setup_core():
     else:
         pass
 
-    print("\n Notification Core setup completed \n")
+    print("\nnotifyone-core setup completed\n")

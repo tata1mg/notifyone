@@ -75,13 +75,27 @@ The NotifyOne system has been seen as an integration of it's four core component
 - AWS SQS
 - AWS S3
 
-#### Steps
 The NotifyOne repository itself does not contain any code and implementations for all the components can be found in their respective repositories.
 
-**How to try out ?**
+### Quick try-out ?
+We have created a script [notify_setup.py]() that can be used to setup the services quickly on your local system. The script sets up the `notifyone-gateway`, `notifyone-core` and `notifyone-handler` services quickly on your machine (it automatically installs dependencies and resolves connectivity between services).    
+
+#### Prerequisites
+- Docker : your machine must have docker installed and running.
+- Python - your machine must have python version >= 3.7 installed on it.
+
+#### How to?
+- Clone the [NotifyOne](https://github.com/tata1mg/notifyone) project
+  - git clone https://github.com/tata1mg/notifyone.git
+- `cd` to notifyone directory
+  - cd notifyone
+- Run command -
+  - python3 notify_setup.py
+
+### Production like deployment?
 - Deploy the Gateway, Core and Handlers components (help on how to deploy can be found in respective repositories README.md)
 - Create test App and Event - Use APIs exposed in Core service to create a test App and Event
-- Trigger notification - use the Gateway's "send-notificaiton" API to trigger notifications for the test Event created in step 2.
+- Trigger notification - use the Gateway's "send-notification" API to trigger notifications for the test Event created in step 2.
 
 ## Contribution guidelines
 Please refer to our [Contribution Guidlines](https://github.com/tata1mg/notifyone/blob/master/CONTRIBUTING.md) before for more details.

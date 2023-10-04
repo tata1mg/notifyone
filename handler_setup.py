@@ -3,11 +3,13 @@ import json
 import os
 from utils import extract_values
 
+from components.handler import SOURCE as HANDLER_SOURCE
+
 
 def setup_handler():
-    print("\n Setting up Notification Handlers \n")
+    print("\nSetting up notifyone-handler.....\n")
 
-    _res = subprocess.run(["git clone https://github.com/tata1mg/notifyone-handler.git"], shell=True,
+    _res = subprocess.run(["git clone {}".format(HANDLER_SOURCE)], shell=True,
                           capture_output=True)
     if _res.returncode != 0:
         print(str(_res.stderr.decode('utf-8')))
@@ -23,7 +25,7 @@ def setup_handler():
     with open('config.json') as c:
         _handler_config = json.load(c)
         _handler_queue_names = extract_values(_handler_config, "QUEUE_NAME")
-        _port = str(_handler_config.get("PORT") or 6563)
+        _port = str(_handler_config.get("PORT") or 9403)
 
     # create local stack queues
     for _q in _handler_queue_names:
@@ -50,4 +52,4 @@ def setup_handler():
         print(str(_res.stderr.decode('utf-8')))
         exit(1)
 
-    print("\n Notification Handler setup completed \n")
+    print("\nnotifyone-core setup completed\n")

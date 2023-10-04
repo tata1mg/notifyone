@@ -52,6 +52,10 @@ if _localstack_start_res.returncode != 0:
 else:
     pass
 
+subprocess.run('rm -rf notifyone-gateway/', shell=True, capture_output=True)
+subprocess.run('rm -rf notifyone-core/', shell=True, capture_output=True)
+subprocess.run('rm -rf notifyone-handler/', shell=True, capture_output=True)
+
 setup_gateway()
 
 os.chdir('../')
@@ -62,6 +66,9 @@ os.chdir('../')
 
 setup_handler()
 
-print('Notification System Setup Complete')
-
-
+print('##### Congratulations! NotifyOne system setup Completed #####')
+print('Service Hosts - \n\t notifyone-gateway : http://localhost:9401 \n\t notifyone-core : http://localhost:9402 \n\t notifyone-handler : http://localhost:9403')
+print('Create App API documentation - \n\t http://localhost:9402/swagger/#/Apps/post_apps')
+print('Create Event API documentation - \n\t http://localhost:9402/swagger/#/Events/post_event_create')
+print('Send-Notification API documentation - \n\t http://localhost:9401/swagger/#/event_notification/post_send_notification')
+print('Get-Notification-Detail API documentation - \n\t http://localhost:9401/swagger/#/event_notification/get_get_notification')
