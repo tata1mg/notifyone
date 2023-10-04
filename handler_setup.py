@@ -1,6 +1,7 @@
 import subprocess
 import json
 import os
+from sys import platform
 from utils import extract_values
 
 from components.handler import SOURCE as HANDLER_SOURCE
@@ -26,6 +27,10 @@ def setup_handler():
         _handler_config = json.load(c)
         _handler_queue_names = extract_values(_handler_config, "QUEUE_NAME")
         _port = str(_handler_config.get("PORT") or 9403)
+        if platform.lower() == 'darwin':
+            _handler_config['SQS_AUTH']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:4566'
+            with open('config.json', 'w') as f:
+                json.dump(_handler_config, f)
 
     # create local stack queues
     for _q in _handler_queue_names:

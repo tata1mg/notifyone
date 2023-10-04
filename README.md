@@ -1,6 +1,5 @@
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/2233092/213641039-220ac15f-f367-4d13-9eaf-56e79433b8c1.png">
     <img src="https://raw.githubusercontent.com/tata1mg/notifyone/master/media/logo.png" width="300" alt="Logo"/>
   </picture>
 </div>
@@ -42,7 +41,7 @@ If you wish to have a provider for a channel that is not in the list, feel free 
 - [x] FCM
 
 #### :pager: WhatsApp
-- [x] Interkt
+- [x] Interakt
 
 ## The Architecture
 NotifyOne uses a highly scalable, fault-tolerant architecture. It runs as a group of services that, combined together, work for the best performance.
@@ -60,7 +59,6 @@ The NotifyOne system has been seen as an integration of it's four core component
 
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/2233092/213641039-220ac15f-f367-4d13-9eaf-56e79433b8c1.png">
     <img src="https://raw.githubusercontent.com/tata1mg/notifyone/master/media/architecture.png" width="1000" alt="Logo"/>
   </picture>
 </div>
