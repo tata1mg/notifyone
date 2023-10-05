@@ -35,8 +35,9 @@ If you wish to have a provider for a channel that is not in the list, feel free 
 - [x] AWS SES
 
 #### :memo: SMS
-- [x] Sms Country
+- [x] SMS Country
 - [x] Plivo
+- [x] AWS SNS
 
 #### :iphone: PUSH
 - [x] FCM
