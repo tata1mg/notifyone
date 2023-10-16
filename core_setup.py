@@ -4,17 +4,8 @@ import os
 from utils import extract_values
 from sys import platform
 
-from components.core import SOURCE as CORE_SOURCE
-
-
 def setup_core():
     print("\nSetting up notifyone-core....\n")
-
-    _res = subprocess.run(["git clone {}".format(CORE_SOURCE)], shell=True,
-                          capture_output=True)
-    if _res.returncode != 0:
-        print(str(_res.stderr.decode('utf-8')))
-        #exit(1)
 
     os.chdir('notifyone-core')
 

@@ -4,17 +4,8 @@ import os
 from utils import extract_values
 from sys import platform
 
-from components.gateway import SOURCE as GATEWAY_SOURCE
-
-
 def setup_gateway():
     print("\nSetting up notifyone-gateway.....\n")
-
-    _res = subprocess.run(["git clone {}".format(GATEWAY_SOURCE)], shell=True,
-                          capture_output=True)
-    if _res.returncode != 0:
-        print(str(_res.stderr.decode('utf-8')))
-        #exit(1)
 
     os.chdir('notifyone-gateway')
 

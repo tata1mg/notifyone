@@ -4,17 +4,9 @@ import os
 from sys import platform
 from utils import extract_values
 
-from components.handler import SOURCE as HANDLER_SOURCE
-
-
 def setup_handler():
-    print("\nSetting up notifyone-handler.....\n")
 
-    _res = subprocess.run(["git clone {}".format(HANDLER_SOURCE)], shell=True,
-                          capture_output=True)
-    if _res.returncode != 0:
-        print(str(_res.stderr.decode('utf-8')))
-        #exit(1)
+    print("\nSetting up notifyone-handler.....\n")
 
     os.chdir('notifyone-handler')
 
