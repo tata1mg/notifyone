@@ -1,0 +1,9 @@
+[submodule "notifyone-gateway"]
+	path = notifyone-gateway
+	url = https://github.com/tata1mg/notifyone-gateway
+[submodule "notifyone-core"]
+	path = notifyone-core
+	url = https://github.com/tata1mg/notifyone-core
+[submodule "notifyone-handler"]
+	path = notifyone-handler
+	url = https://github.com/tata1mg/notifyone-handler
