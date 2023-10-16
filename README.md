@@ -94,7 +94,14 @@ We have created a script [notify_setup.py]() that can be used to setup the servi
   - python3 notify_setup.py
 
 ### Production like deployment?
-- Deploy the Gateway, Core and Handlers components (help on how to deploy can be found in respective repositories README.md)
+- Clone the [NotifyOne](https://github.com/tata1mg/notifyone) project
+  - `git clone https://github.com/tata1mg/notifyone.git`
+- `cd` to notifyone directory
+  - `cd notifyone`
+- Components are available as git submodule in the notifyone repo. So we need to `init` and `update` the submodules-
+  - `git submodule init`
+  - `git submodule update`
+- Deploy the Gateway, Core and Handlers components as per your preference (help on how to deploy can be found in respective repositories README.md)
 - Create test App and Event - Use APIs exposed in Core service to create a test App and Event
 - Trigger notification - use the Gateway's "send-notification" API to trigger notifications for the test Event created in step 2.
 

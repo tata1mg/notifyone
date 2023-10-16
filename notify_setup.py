@@ -52,9 +52,10 @@ if _localstack_start_res.returncode != 0:
 else:
     pass
 
-subprocess.run('rm -rf notifyone-gateway/', shell=True, capture_output=True)
-subprocess.run('rm -rf notifyone-core/', shell=True, capture_output=True)
-subprocess.run('rm -rf notifyone-handler/', shell=True, capture_output=True)
+print("### Init component submodules........")
+subprocess.run('git submodule init', shell=True, capture_output=True)
+print("### Update component submodules........")
+subprocess.run('git submodule update', shell=True, capture_output=True)
 
 setup_gateway()
 
