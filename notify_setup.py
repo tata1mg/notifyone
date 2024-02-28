@@ -57,6 +57,14 @@ subprocess.run('git submodule init', shell=True, capture_output=True)
 print("### Update component submodules........")
 subprocess.run('git submodule update', shell=True, capture_output=True)
 
+# Pull required python slim image
+print("Pull required python slim image - python:3.9.10-slim")
+_res = subprocess.run('docker pull python:3.9.10-slim', shell=True, capture_output=True)
+if _res.returncode != 0:
+    print(str(_res.stderr.decode('utf-8')))
+    exit(1)
+
+
 setup_gateway()
 
 os.chdir('../')
