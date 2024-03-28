@@ -3,6 +3,7 @@ import os
 from gateway_setup import setup_gateway
 from core_setup import setup_core
 from handler_setup import setup_handler
+from dashboard_setup import setup_dashboard
 
 _docker_check_res = subprocess.run(['docker info'], shell=True, capture_output=True)
 if _docker_check_res.returncode != 0:
@@ -75,8 +76,14 @@ os.chdir('../')
 
 setup_handler()
 
+os.chdir('../')
+
+setup_dashboard()
+
+os.chdir('../')
+
 print('##### Congratulations! NotifyOne system setup Completed #####')
-print('Service Hosts - \n\t notifyone-gateway : http://localhost:9401 \n\t notifyone-core : http://localhost:9402 \n\t notifyone-handler : http://localhost:9403')
+print('Service Hosts - \n\t notifyone-dashboard : http://localhost:8001 \n\t notifyone-gateway : http://localhost:9401 \n\t notifyone-core : http://localhost:9402 \n\t notifyone-handler : http://localhost:9403')
 print('Create App API documentation - \n\t http://localhost:9402/swagger/#/Apps/post_apps')
 print('Create Event API documentation - \n\t http://localhost:9402/swagger/#/Events/post_event_create')
 print('Send-Notification API documentation - \n\t http://localhost:9401/swagger/#/event_notification/post_send_notification')
