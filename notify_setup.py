@@ -8,6 +8,8 @@ from dashboard_setup import setup_dashboard
 
 sys_platform = sys.argv[1] if len(sys.argv) > 1 else "linux/amd64"
 
+print("Building for system platform - {}".format(sys_platform))
+
 _docker_check_res = subprocess.run(['docker info'], shell=True, capture_output=True)
 if _docker_check_res.returncode != 0:
     print("Either Docker is not installed or not running\n"+(str(_docker_check_res.stderr.decode('utf-8'))))
