@@ -1,6 +1,7 @@
 import subprocess
 import os
 import sys
+from sys import platform
 from gateway_setup import setup_gateway
 from core_setup import setup_core
 from handler_setup import setup_handler
@@ -70,6 +71,12 @@ if _res.returncode != 0:
     print(str(_res.stderr.decode('utf-8')))
     exit(1)
 
+# Create a docker network and connect components to the network
+if platform == "linux":
+    subprocess.run('docker network create notifyone-network', shell=True, capture_output=True)
+    subprocess.run('docker network connect notifyone-network postgres_notify', shell=True, capture_output=True)
+    subprocess.run('docker network connect notifyone-network redis_notify', shell=True, capture_output=True)
+    subprocess.run('docker network connect notifyone-network localstack-main', shell=True, capture_output=True)
 
 setup_gateway(sys_platform)
 
@@ -87,13 +94,7 @@ setup_dashboard(sys_platform)
 
 os.chdir('../')
 
-from sys import platform
-
 if platform == "linux":
-    subprocess.run('docker network create notifyone-network', shell=True, capture_output=True)
-    subprocess.run('docker network connect notifyone-network postgres_notify', shell=True, capture_output=True)
-    subprocess.run('docker network connect notifyone-network redis_notify', shell=True, capture_output=True)
-    subprocess.run('docker network connect notifyone-network localstack-main', shell=True, capture_output=True)
     subprocess.run('docker network connect notifyone-network notifyone-gateway', shell=True, capture_output=True)
     subprocess.run('docker network connect notifyone-network notifyone-core', shell=True, capture_output=True)
     subprocess.run('docker network connect notifyone-network notifyone-handler', shell=True, capture_output=True)
