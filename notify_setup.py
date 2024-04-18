@@ -83,7 +83,7 @@ setup_handler(sys_platform)
 
 os.chdir('../')
 
-setup_dashboard()
+setup_dashboard(sys_platform)
 
 os.chdir('../')
 

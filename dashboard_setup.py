@@ -4,7 +4,7 @@ import os
 from sys import platform
 
 
-def setup_dashboard():
+def setup_dashboard(sys_platform):
     print("\nSetting up notifyone-dashboard.....\n")
 
     os.chdir('notifyone-dashboard')
@@ -21,7 +21,7 @@ def setup_dashboard():
     _stat = subprocess.run(['docker rm --force notifyone-dashboard'], shell=True)
     _stat = subprocess.run(["docker image rm notifyone-dashboard"], shell=True)
 
-    _res = subprocess.run(['docker build . --tag notifyone-dashboard --build-arg SERVICE_NAME=notifyone_dashboard'],
+    _res = subprocess.run(['docker build . --tag notifyone-dashboard --build-arg SERVICE_NAME=notifyone_dashboard --build-arg SYS_PLATFORM={}'.format(sys_platform)],
                           shell=True, capture_output=True)
     if _res.returncode != 0:
         print(str(_res.stderr.decode('utf-8')))
