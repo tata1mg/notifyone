@@ -1,9 +1,12 @@
 import subprocess
 import os
+import sys
 from gateway_setup import setup_gateway
 from core_setup import setup_core
 from handler_setup import setup_handler
 from dashboard_setup import setup_dashboard
+
+sys_platform = sys.argv[1] if len(sys.argv) > 1 else "linux/amd64"
 
 _docker_check_res = subprocess.run(['docker info'], shell=True, capture_output=True)
 if _docker_check_res.returncode != 0:
@@ -60,21 +63,21 @@ subprocess.run('git submodule update', shell=True, capture_output=True)
 
 # Pull required python slim image
 print("Pull required python slim image - python:3.9.10-slim")
-_res = subprocess.run('docker pull python:3.9.10-slim', shell=True, capture_output=True)
+_res = subprocess.run('docker pull --platform="{}" python:3.9.10-slim'.format(sys_platform), shell=True, capture_output=True)
 if _res.returncode != 0:
     print(str(_res.stderr.decode('utf-8')))
     exit(1)
 
 
-setup_gateway()
+setup_gateway(sys_platform)
 
 os.chdir('../')
 
-setup_core()
+setup_core(sys_platform)
 
 os.chdir('../')
 
-setup_handler()
+setup_handler(sys_platform)
 
 os.chdir('../')
 

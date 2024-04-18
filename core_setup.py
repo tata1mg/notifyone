@@ -4,7 +4,7 @@ import os
 from utils import extract_values
 from sys import platform
 
-def setup_core():
+def setup_core(sys_platform):
     print("\nSetting up notifyone-core....\n")
 
     os.chdir('notifyone-core')
@@ -40,7 +40,7 @@ def setup_core():
     _stat = subprocess.run(['docker rm --force notifyone-core'], shell=True)
     _stat = subprocess.run(["docker image rm notifyone-core"], shell=True)
 
-    _res = subprocess.run(['docker build . --tag notifyone-core --build-arg SERVICE_NAME=notifyone_core'],
+    _res = subprocess.run(['docker build . --tag notifyone-core --build-arg SERVICE_NAME=notifyone_core --build-arg SYS_PLATFORM={}'.format(sys_platform)],
                           shell=True, capture_output=True)
     if _res.returncode != 0:
         print(str(_res.stderr.decode('utf-8')))
