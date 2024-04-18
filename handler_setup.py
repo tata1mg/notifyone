@@ -23,6 +23,10 @@ def setup_handler(sys_platform):
             _handler_config['SQS_AUTH']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:4566'
             with open('config.json', 'w') as f:
                 json.dump(_handler_config, f)
+        elif platform.lower() == "linux":
+            _handler_config['SQS_AUTH']['SQS_ENDPOINT_URL'] = 'http://localstack-main:4566'
+            with open('config.json', 'w') as f:
+                json.dump(_handler_config, f)
 
     # create local stack queues
     for _q in _handler_queue_names:

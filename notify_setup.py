@@ -87,6 +87,18 @@ setup_dashboard(sys_platform)
 
 os.chdir('../')
 
+from sys import platform
+
+if platform == "linux":
+    subprocess.run('docker network create notifyone-network', shell=True, capture_output=True)
+    subprocess.run('docker network connect notifyone-network postgres_notify', shell=True, capture_output=True)
+    subprocess.run('docker network connect notifyone-network redis_notify', shell=True, capture_output=True)
+    subprocess.run('docker network connect notifyone-network localstack-main', shell=True, capture_output=True)
+    subprocess.run('docker network connect notifyone-network notifyone-gateway', shell=True, capture_output=True)
+    subprocess.run('docker network connect notifyone-network notifyone-core', shell=True, capture_output=True)
+    subprocess.run('docker network connect notifyone-network notifyone-handler', shell=True, capture_output=True)
+    subprocess.run('docker network connect notifyone-network notifyone-dashboard', shell=True, capture_output=True)
+
 print('##### Congratulations! NotifyOne system setup Completed #####')
 print('Service Hosts - \n\t notifyone-dashboard : http://localhost:8001 \n\t notifyone-gateway : http://localhost:9401 \n\t notifyone-core : http://localhost:9402 \n\t notifyone-handler : http://localhost:9403')
 print('Create App API documentation - \n\t http://localhost:9402/swagger/#/Apps/post_apps')

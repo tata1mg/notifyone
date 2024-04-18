@@ -24,6 +24,11 @@ def setup_gateway(sys_platform):
             _gateway_config['TRIGGER_NOTIFICATIONS']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:4566'
             with open('config.json', 'w') as f:
                 json.dump(_gateway_config, f)
+        elif platform.lower() == "linux":
+            _gateway_config['NOTIFICATION_SERVICE']['HOST'] = 'http://notifyone-core:9402'
+            _gateway_config['TRIGGER_NOTIFICATIONS']['SQS']['SQS_ENDPOINT_URL'] = 'http://localstack-main:4566'
+            with open('config.json', 'w') as f:
+                json.dump(_gateway_config, f)
 
     # create local stack queues
     for _q in _gateway_queue_names:

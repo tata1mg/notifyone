@@ -26,6 +26,14 @@ def setup_core(sys_platform):
             _core_config['REDIS_CACHE_HOSTS']['default']['REDIS_HOST'] = 'host.docker.internal'
             with open('config.json', 'w') as f:
                 json.dump(_core_config, f)
+        elif platform.lower() == "linux":
+            _core_config['DB_CONNECTIONS']['connections']['default']['credentials']['host'] = 'postgres_notify'
+            _core_config['SUBSCRIBE_NOTIFICATION_STATUS_UPDATES']['SQS']['SQS_ENDPOINT_URL'] = 'http://localstack-main:4566'
+            _core_config['DISPATCH_NOTIFICATION_REQUEST']['SQS']['SQS_ENDPOINT_URL'] = 'http://localstack-main:4566'
+            _core_config['NOTIFICATION_REQUEST']['SQS']['SQS_ENDPOINT_URL'] = 'http://localstack-main:4566'
+            _core_config['REDIS_CACHE_HOSTS']['default']['REDIS_HOST'] = 'redis_notify'
+            with open('config.json', 'w') as f:
+                json.dump(_core_config, f)
 
     # create local stack queues
     for _q in _core_queue_names:
