@@ -1,0 +1,612 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "paths": {
+    "/apps": {
+      "post": {
+        "tags": [
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "int32",
+                      "description": "ID of the newly created app",
+                      "example": 111
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "App name provided in the request body",
+                      "example": "test_app"
+                    },
+                    "message": {
+                      "type": "string",
+                      "description": "Message string",
+                      "example": "App created successfully"
+                    }
+                  }
+                }
+              }
+            },
+            "status": 200,
+            "description": "Default Response"
+          }
+        },
+        "summary": "Create App API",
+        "description": "The API can be used to create new apps in the system",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "App name provided in the request body",
+                    "example": "test_app"
+                  },
+                  "callback_url": {
+                    "type": "string",
+                    "description": "Webhook URL to receive status updates",
+                    "example": "https://example.com/webhook"
+                  },
+                  "callback_events": {
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "default": "DELIVERED"
+                        },
+                        "description": "List of events to subscribe for emails"
+                      },
+                      "sms": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "default": "DELIVERED"
+                        },
+                        "description": "List of events to subscribe for sms notifications"
+                      },
+                      "push": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "default": ""
+                        },
+                        "description": "List of events to subscribe for push notifications"
+                      },
+                      "whatsapp": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "default": "DELIVERED"
+                        },
+                        "description": "List of events to subscribe for whatsapp notifications"
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "type": "object",
+                    "properties": {
+                      "sender_details": {
+                        "type": "object",
+                        "properties": {
+                          "email": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "description": "Sender name to be used in sending email",
+                                "example": "Tata 1mg",
+                                "required": true
+                              },
+                              "address": {
+                                "type": "string",
+                                "description": "Sender email address to be used in sending email",
+                                "example": "sender@xyzmail.com",
+                                "required": true
+                              },
+                              "reply_to": {
+                                "type": "string",
+                                "description": "Reply to email address for sending email",
+                                "example": "reply@xyzmail.com",
+                                "required": true
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "required": null,
+          "description": null
+        }
+      }
+    },
+    "\/event/create": {
+      "post": {
+        "tags": [
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "event_id": {
+                      "type": "string",
+                      "description": "Event ID generated for this event",
+                      "example": 111,
+                      "required": true
+                    },
+                    "event_name": {
+                      "type": "string",
+                      "description": "Event name",
+                      "example": "test_event",
+                      "required": true
+                    },
+                    "app_name": {
+                      "type": "string",
+                      "description": "App name",
+                      "example": "test_app",
+                      "required": true
+                    },
+                    "action": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "integer",
+                          "format": "int32",
+                          "example": 1
+                        },
+                        "sms": {
+                          "type": "integer",
+                          "format": "int32",
+                          "example": 1
+                        },
+                        "push": {
+                          "type": "integer",
+                          "format": "int32",
+                          "example": 1
+                        },
+                        "whatsapp": {
+                          "type": "integer",
+                          "format": "int32",
+                          "example": 1
+                        }
+                      }
+                    },
+                    "trigger_limit": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "Whatsapp template name for Interkt",
+                          "example": "order_delivered",
+                          "required": true
+                        }
+                      }
+                    },
+                    "created_by": {
+                      "type": "string",
+                      "description": "Email ID of the user requesting to create the event",
+                      "example": "test@test.com"
+                    }
+                  }
+                }
+              }
+            },
+            "status": 200,
+            "description": "Default Response"
+          }
+        },
+        "summary": "Create Event API",
+        "description": "The API can be used to create new events in the system",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "event_name": {
+                    "type": "string",
+                    "description": "Event name",
+                    "example": "test_event",
+                    "required": true
+                  },
+                  "app_name": {
+                    "type": "string",
+                    "description": "App name",
+                    "example": "test_app",
+                    "required": true
+                  },
+                  "email": {
+                    "type": "object",
+                    "properties": {
+                      "description": {
+                        "type": "string",
+                        "description": "Description of your event",
+                        "example": "This is test event",
+                        "required": true
+                      },
+                      "subject": {
+                        "type": "string",
+                        "description": "Email subject",
+                        "example": "Regarding your Order {{order.order_id}}",
+                        "required": true
+                      },
+                      "content": {
+                        "type": "string",
+                        "description": "Email body",
+                        "example": "Your order {{order.order_id}} has been processed",
+                        "required": true
+                      }
+                    }
+                  },
+                  "sms": {
+                    "type": "object",
+                    "properties": {
+                      "content": {
+                        "type": "string",
+                        "description": "Email body",
+                        "example": "Your order {{order.order_id}} has been processed",
+                        "required": true
+                      }
+                    }
+                  },
+                  "push": {
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "type": "string",
+                        "description": "Push message title",
+                        "example": "Order update",
+                        "required": true
+                      },
+                      "body": {
+                        "type": "string",
+                        "description": "Push message body text",
+                        "example": "Order {{order.order_id}} has been delivered",
+                        "required": true
+                      }
+                    }
+                  },
+                  "whatsapp": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Whatsapp template name for Interkt",
+                        "example": "order_delivered",
+                        "required": true
+                      }
+                    }
+                  },
+                  "priority": {
+                    "type": "string",
+                    "description": "Priority for this event. Priority can be one of these values - critical/high/medium/low",
+                    "example": "high",
+                    "required": true
+                  },
+                  "event_type": {
+                    "type": "string",
+                    "description": "Type for this event. Type can be one of these values - promotional/transactional/other",
+                    "example": "transactional",
+                    "required": true
+                  },
+                  "user_email": {
+                    "type": "string",
+                    "description": "Email ID of the user requesting to create the event",
+                    "example": "test@test.com",
+                    "required": true
+                  }
+                }
+              }
+            }
+          },
+          "required": null,
+          "description": null
+        }
+      }
+    },
+    "\/send-notification": {
+      "post": {
+        "tags": [
+        ],
+        "security": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "content": {
+              "application\/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "request_id": {
+                          "type": "string",
+                          "description": "Unique request ID generated by the Notification System for this request",
+                          "example": "3e1ba047-71b1-4bd1-b510-613a50030b69"
+                        },
+                        "message": {
+                          "type": "string",
+                          "description": "a message string",
+                          "example": "success"
+                        },
+                        "processing_type": {
+                          "type": "string",
+                          "description": "Processing type used for this request. It can SYNC or ASYNC",
+                          "example": "ASYNC"
+                        }
+                      }
+                    },
+                    "is_success": {
+                      "type": "boolean",
+                      "description": "true\/false to denote if the request was successful or not",
+                      "example": true
+                    },
+                    "status_code": {
+                      "type": "integer",
+                      "format": "int32",
+                      "description": "Http response status code",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            },
+            "status": 200,
+            "description": "Default Response"
+          }
+        },
+        "summary": "Send Notification API",
+        "description": "This API can be used to trigger notifications for an already created event.The API triggers notifications for all the active and eligible channels in the event. The processing can either be ASYNC or SYNC depending upon the event priority",
+        "requestBody": {
+          "content": {
+            "application\/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "event_id": {
+                    "type": "integer",
+                    "format": "int32",
+                    "example": 25,
+                    "description": "Event ID for this notification"
+                  },
+                  "source_identifier": {
+                    "type": "string",
+                    "example": "ID1212122",
+                    "description": "Source identifier sent with the request"
+                  },
+                  "to": {
+                    "type": "object",
+                    "properties": {}
+                  },
+                  "channels": {
+                    "type": "object",
+                    "properties": {
+                      "email": {
+                        "type": "object",
+                        "properties": {
+                          "sender": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "description": "Send name",
+                                "example": "Tata 1mg",
+                                "required": false
+                              },
+                              "address": {
+                                "type": "string",
+                                "description": "Send email address",
+                                "example": "xyz@1mg.com",
+                                "required": false
+                              }
+                            }
+                          },
+                          "reply_to": {
+                            "type": "string",
+                            "description": "Reply-to email ID",
+                            "required": false
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "attachments": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "url": {
+                          "type": "string",
+                          "example": "https:\/\/1mg-odin-production.s3.ap-south-1.amazonaws.com\/upload\/sales_orders\/42550349\/6f55151e-adb5-4171-8fe2-5eb6599eafb7.pdf",
+                          "required": true
+                        },
+                        "filename": {
+                          "type": "string",
+                          "example": "report.pdf",
+                          "required": true
+                        }
+                      }
+                    },
+                    "required": false
+                  },
+                  "body": {
+                    "type": "object",
+                    "properties": {}
+                  }
+                }
+              }
+            }
+          },
+          "required": null,
+          "description": null
+        }
+      }
+    },
+    "\/get-notification": {
+      "get": {
+        "tags": [
+        ],
+        "security": [],
+        "parameters": [
+          {
+            "name": "notification_request_id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Unique ID generated by the Notification System",
+            "in": "query"
+          },
+          {
+            "name": "source_identifier",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Source identifier sent with the request",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application\/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "notifications": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "example": 3250,
+                                    "description": "Notification Identifier"
+                                  },
+                                  "event_id": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "example": 25,
+                                    "description": "Event ID for this notification"
+                                  },
+                                  "notification_request_id": {
+                                    "type": "string",
+                                    "example": "3e1ba047-71b1-4bd1-b510-613a50030b69",
+                                    "description": "Unique ID generated by the Notification System"
+                                  },
+                                  "channel": {
+                                    "type": "string",
+                                    "example": "push",
+                                    "description": "Channel type of notification"
+                                  },
+                                  "status": {
+                                    "type": "string",
+                                    "example": "SUCCESS",
+                                    "description": "Current status. Possible values are - NEW\/INITIATED\/FAILED\/SUCCESS\/NOT_ELIGIBLE"
+                                  },
+                                  "sent_to": {
+                                    "type": "string",
+                                    "example": "DEVICE1211212",
+                                    "description": "Recipient address"
+                                  },
+                                  "source_identifier": {
+                                    "type": "string",
+                                    "example": "ID1212122",
+                                    "description": "Source identifier sent with the request"
+                                  },
+                                  "operator": {
+                                    "type": "string",
+                                    "example": "FCM",
+                                    "description": "Operator used to send out the notification"
+                                  },
+                                  "operator_event_id": {
+                                    "type": "string",
+                                    "example": "A112123232323",
+                                    "description": "Operator side ID for this notification"
+                                  },
+                                  "message": {
+                                    "type": "string",
+                                    "example": "Success",
+                                    "description": "Optional message"
+                                  },
+                                  "created": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "example": 1679969481,
+                                    "description": "Epoch time when the notification was created"
+                                  },
+                                  "updated": {
+                                    "type": "integer",
+                                    "format": "int32",
+                                    "example": 1679969481,
+                                    "description": "Epoch time when the notification was last updated"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "is_success": {
+                      "type": "boolean",
+                      "description": "true\/false to denote if the request was successful or not",
+                      "example": true
+                    },
+                    "status_code": {
+                      "type": "integer",
+                      "format": "int32",
+                      "description": "Http response status code",
+                      "example": 200
+                    }
+                  }
+                }
+              }
+            },
+            "status": 200,
+            "description": "Default Response"
+          }
+        },
+        "summary": "Get Notifications API",
+        "description": "This API can be used to fetch the status of a notification request.It returns list of notifications triggered for the notification request"
+      }
+    }
+  },
+  "tags": [
+  ],
+  "servers": [],
+  "components": null,
+  "externalDocs": null
+}
