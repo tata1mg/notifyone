@@ -1,8 +1,15 @@
 import subprocess
 import os
+import sys
+from sys import platform
 from gateway_setup import setup_gateway
 from core_setup import setup_core
 from handler_setup import setup_handler
+from dashboard_setup import setup_dashboard
+
+sys_platform = sys.argv[1] if len(sys.argv) > 1 else "linux/amd64"
+
+print("Building for system platform - {}".format(sys_platform))
 
 _docker_check_res = subprocess.run(['docker info'], shell=True, capture_output=True)
 if _docker_check_res.returncode != 0:
@@ -59,24 +66,42 @@ subprocess.run('git submodule update', shell=True, capture_output=True)
 
 # Pull required python slim image
 print("Pull required python slim image - python:3.9.10-slim")
-_res = subprocess.run('docker pull python:3.9.10-slim', shell=True, capture_output=True)
+_res = subprocess.run('docker pull --platform="{}" python:3.9.10-slim'.format(sys_platform), shell=True, capture_output=True)
 if _res.returncode != 0:
     print(str(_res.stderr.decode('utf-8')))
     exit(1)
 
+# Create a docker network and connect components to the network
+if platform == "linux":
+    subprocess.run('docker network create notifyone-network', shell=True, capture_output=True)
+    subprocess.run('docker network connect notifyone-network postgres_notify', shell=True, capture_output=True)
+    subprocess.run('docker network connect notifyone-network redis_notify', shell=True, capture_output=True)
+    subprocess.run('docker network connect notifyone-network localstack-main', shell=True, capture_output=True)
 
-setup_gateway()
+setup_gateway(sys_platform)
 
 os.chdir('../')
 
-setup_core()
+setup_core(sys_platform)
 
 os.chdir('../')
 
-setup_handler()
+setup_handler(sys_platform)
+
+os.chdir('../')
+
+setup_dashboard(sys_platform)
+
+os.chdir('../')
+
+if platform == "linux":
+    subprocess.run('docker network connect notifyone-network notifyone-gateway', shell=True, capture_output=True)
+    subprocess.run('docker network connect notifyone-network notifyone-core', shell=True, capture_output=True)
+    subprocess.run('docker network connect notifyone-network notifyone-handler', shell=True, capture_output=True)
+    subprocess.run('docker network connect notifyone-network notifyone-dashboard', shell=True, capture_output=True)
 
 print('##### Congratulations! NotifyOne system setup Completed #####')
-print('Service Hosts - \n\t notifyone-gateway : http://localhost:9401 \n\t notifyone-core : http://localhost:9402 \n\t notifyone-handler : http://localhost:9403')
+print('Service Hosts - \n\t notifyone-dashboard : http://localhost:8001 \n\t notifyone-gateway : http://localhost:9401 \n\t notifyone-core : http://localhost:9402 \n\t notifyone-handler : http://localhost:9403')
 print('Create App API documentation - \n\t http://localhost:9402/swagger/#/Apps/post_apps')
 print('Create Event API documentation - \n\t http://localhost:9402/swagger/#/Events/post_event_create')
 print('Send-Notification API documentation - \n\t http://localhost:9401/swagger/#/event_notification/post_send_notification')

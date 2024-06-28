@@ -4,7 +4,7 @@ import os
 from sys import platform
 from utils import extract_values
 
-def setup_handler():
+def setup_handler(sys_platform):
 
     print("\nSetting up notifyone-handler.....\n")
 
@@ -23,6 +23,10 @@ def setup_handler():
             _handler_config['SQS_AUTH']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:4566'
             with open('config.json', 'w') as f:
                 json.dump(_handler_config, f)
+        elif platform.lower() == "linux":
+            _handler_config['SQS_AUTH']['SQS_ENDPOINT_URL'] = 'http://localstack-main:4566'
+            with open('config.json', 'w') as f:
+                json.dump(_handler_config, f)
 
     # create local stack queues
     for _q in _handler_queue_names:
@@ -37,7 +41,7 @@ def setup_handler():
     _stat = subprocess.run(['docker rm --force notifyone-handler'], shell=True)
     _stat = subprocess.run(["docker image rm notifyone-handler"], shell=True)
 
-    _res = subprocess.run(['docker build . --tag notifyone-handler --build-arg SERVICE_NAME=notifyone_handler'],
+    _res = subprocess.run(['docker build . --tag notifyone-handler --build-arg SERVICE_NAME=notifyone_handler --build-arg SYS_PLATFORM={}'.format(sys_platform)],
                           shell=True, capture_output=True)
     if _res.returncode != 0:
         print(str(_res.stderr.decode('utf-8')))

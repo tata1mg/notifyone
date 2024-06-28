@@ -4,7 +4,8 @@ import os
 from utils import extract_values
 from sys import platform
 
-def setup_gateway():
+
+def setup_gateway(sys_platform):
     print("\nSetting up notifyone-gateway.....\n")
 
     os.chdir('notifyone-gateway')
@@ -23,6 +24,11 @@ def setup_gateway():
             _gateway_config['TRIGGER_NOTIFICATIONS']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:4566'
             with open('config.json', 'w') as f:
                 json.dump(_gateway_config, f)
+        elif platform.lower() == "linux":
+            _gateway_config['NOTIFICATION_SERVICE']['HOST'] = 'http://notifyone-core:9402'
+            _gateway_config['TRIGGER_NOTIFICATIONS']['SQS']['SQS_ENDPOINT_URL'] = 'http://localstack-main:4566'
+            with open('config.json', 'w') as f:
+                json.dump(_gateway_config, f)
 
     # create local stack queues
     for _q in _gateway_queue_names:
@@ -37,7 +43,7 @@ def setup_gateway():
     _stat = subprocess.run(['docker rm --force notifyone-gateway'], shell=True)
     _stat = subprocess.run(["docker image rm notifyone-gateway"], shell=True)
 
-    _res = subprocess.run(['docker build . --tag notifyone-gateway --build-arg SERVICE_NAME=notifyone_gateway'],
+    _res = subprocess.run(['docker build . --tag notifyone-gateway --build-arg SERVICE_NAME=notifyone_gateway --build-arg SYS_PLATFORM={}'.format(sys_platform)],
                           shell=True, capture_output=True)
     if _res.returncode != 0:
         print(str(_res.stderr.decode('utf-8')))

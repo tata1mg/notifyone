@@ -4,7 +4,7 @@ import os
 from utils import extract_values
 from sys import platform
 
-def setup_core():
+def setup_core(sys_platform):
     print("\nSetting up notifyone-core....\n")
 
     os.chdir('notifyone-core')
@@ -26,6 +26,14 @@ def setup_core():
             _core_config['REDIS_CACHE_HOSTS']['default']['REDIS_HOST'] = 'host.docker.internal'
             with open('config.json', 'w') as f:
                 json.dump(_core_config, f)
+        elif platform.lower() == "linux":
+            _core_config['DB_CONNECTIONS']['connections']['default']['credentials']['host'] = 'postgres_notify'
+            _core_config['SUBSCRIBE_NOTIFICATION_STATUS_UPDATES']['SQS']['SQS_ENDPOINT_URL'] = 'http://localstack-main:4566'
+            _core_config['DISPATCH_NOTIFICATION_REQUEST']['SQS']['SQS_ENDPOINT_URL'] = 'http://localstack-main:4566'
+            _core_config['NOTIFICATION_REQUEST']['SQS']['SQS_ENDPOINT_URL'] = 'http://localstack-main:4566'
+            _core_config['REDIS_CACHE_HOSTS']['default']['REDIS_HOST'] = 'redis_notify'
+            with open('config.json', 'w') as f:
+                json.dump(_core_config, f)
 
     # create local stack queues
     for _q in _core_queue_names:
@@ -40,7 +48,7 @@ def setup_core():
     _stat = subprocess.run(['docker rm --force notifyone-core'], shell=True)
     _stat = subprocess.run(["docker image rm notifyone-core"], shell=True)
 
-    _res = subprocess.run(['docker build . --tag notifyone-core --build-arg SERVICE_NAME=notifyone_core'],
+    _res = subprocess.run(['docker build . --tag notifyone-core --build-arg SERVICE_NAME=notifyone_core --build-arg SYS_PLATFORM={}'.format(sys_platform)],
                           shell=True, capture_output=True)
     if _res.returncode != 0:
         print(str(_res.stderr.decode('utf-8')))
