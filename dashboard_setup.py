@@ -4,7 +4,7 @@ import os
 from sys import platform
 
 
-def setup_dashboard(sys_platform):
+def setup_dashboard(sys_platform, cms_api_endpoint):
     print("\nSetting up notifyone-dashboard.....\n")
 
     os.chdir('notifyone-dashboard')
@@ -17,11 +17,12 @@ def setup_dashboard(sys_platform):
     with open('./src/config.json', 'r') as c:
         _dashboard_config = json.load(c)
         _dashboard_port = str(_dashboard_config.get("communication").get("communicationAppUrlPort") or 8000)
+        _dashboard_config["communication"]["serverDomain"] = cms_api_endpoint
         # if platform.lower() == 'darwin':
         #     _dashboard_config["communication"]["serverDomain"] = "http://host.docker.internal:9402"
         #     _dashboard_config["server"]["base_notification_url"] = "http://host.docker.internal:9402"
-        # with open('./src/config.json', 'w') as f:
-        #     json.dump(_dashboard_config, f)
+        with open('./src/config.json', 'w') as f:
+            json.dump(_dashboard_config, f)
 
     _stat = subprocess.run(['docker rm --force notifyone-dashboard'], shell=True)
     _stat = subprocess.run(["docker image rm notifyone-dashboard"], shell=True)
