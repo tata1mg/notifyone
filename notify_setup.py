@@ -100,6 +100,14 @@ if platform == "linux":
     subprocess.run('docker network connect notifyone-network notifyone-handler', shell=True, capture_output=True)
     subprocess.run('docker network connect notifyone-network notifyone-dashboard', shell=True, capture_output=True)
 
+_res = subprocess.run(["docker exec -i $(docker ps | grep notifyone-core | awk '{print $1}') python3 database.py upgrade "],
+                          shell=True, capture_output=True)
+if _res.returncode != 0:
+    print("\nError in DB upgrade\n")
+    print(_res.stderr.decode('utf-8'))
+else:
+    print("\nDB upgrade Successful\n")
+
 print('##### Congratulations! NotifyOne system setup Completed #####')
 print('Service Hosts - \n\t notifyone-dashboard : http://localhost:8001 \n\t notifyone-gateway : http://localhost:9401 \n\t notifyone-core : http://localhost:9402 \n\t notifyone-handler : http://localhost:9403')
 print('Create App API documentation - \n\t http://localhost:9402/swagger/#/Apps/post_apps')

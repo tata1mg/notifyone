@@ -9,6 +9,11 @@ def setup_dashboard(sys_platform):
 
     os.chdir('notifyone-dashboard')
 
+    _res = subprocess.run(['cp src/config.template.json src/config.json'], shell=True, capture_output=True)
+    if _res.returncode != 0:
+        print(str(_res.stderr.decode('utf-8')))
+        exit(1)
+
     with open('./src/config.json', 'r') as c:
         _dashboard_config = json.load(c)
         _dashboard_port = str(_dashboard_config.get("communication").get("communicationAppUrlPort") or 8000)
