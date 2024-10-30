@@ -53,10 +53,31 @@ if _res.returncode != 0:
 else:
     pass
 
+
+
 _localstack_start_res = subprocess.run(['localstack start -d'], shell=True, capture_output=True)
 if _localstack_start_res.returncode != 0:
     print(str(_localstack_start_res.stderr.decode('utf-8')))
     exit(1)
+else:
+    pass
+
+print("setup aws default region to eu-west-2")
+_res = subprocess.run(["rm /tmp/config"],
+                      shell=True, capture_output=True)
+_res = subprocess.run(['touch /tmp/config | echo "[default]" >> /tmp/config | echo "region=eu-west-2" >> /tmp/config'],
+                      shell=True, capture_output=True)
+if _res.returncode != 0:
+    print("\nError in creating localstck aws config file\n")
+    print(_res.stderr.decode('utf-8'))
+else:
+    pass
+_res = subprocess.run(
+    ["docker cp /tmp/config $(docker ps | grep localstack | awk '{print $1}'):/root/.aws/config"],
+    shell=True, capture_output=True)
+if _res.returncode != 0:
+    print("\nError in copying localstck aws config file to localstack container\n")
+    print(_res.stderr.decode('utf-8'))
 else:
     pass
 
