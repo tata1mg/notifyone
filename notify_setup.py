@@ -62,27 +62,27 @@ if _localstack_start_res.returncode != 0:
 else:
     pass
 
-print("setup aws default region to eu-west-2")
-_res = subprocess.run(["rm /tmp/config"],
-                      shell=True, capture_output=True)
-_res = subprocess.run(['touch /tmp/config | echo "[default]" >> /tmp/config | echo "region=eu-west-2" >> /tmp/config'],
-                      shell=True, capture_output=True)
-if _res.returncode != 0:
-    print("\nError in creating localstck aws config file\n")
-    print(_res.stderr.decode('utf-8'))
-else:
-    pass
-_res = subprocess.run(
-    ["docker exec -i $(docker ps | grep localstack | awk '{print $1}') mkdir /root/.aws"],
-    shell=True, capture_output=True)
-_res = subprocess.run(
-    ["docker cp /tmp/config $(docker ps | grep localstack | awk '{print $1}'):/root/.aws/config"],
-    shell=True, capture_output=True)
-if _res.returncode != 0:
-    print("\nError in copying localstck aws config file to localstack container\n")
-    print(_res.stderr.decode('utf-8'))
-else:
-    pass
+# print("setup aws default region to eu-west-2")
+# _res = subprocess.run(["rm /tmp/config"],
+#                       shell=True, capture_output=True)
+# _res = subprocess.run(['touch /tmp/config | echo "[default]" >> /tmp/config | echo "region=eu-west-2" >> /tmp/config'],
+#                       shell=True, capture_output=True)
+# if _res.returncode != 0:
+#     print("\nError in creating localstck aws config file\n")
+#     print(_res.stderr.decode('utf-8'))
+# else:
+#     pass
+# _res = subprocess.run(
+#     ["docker exec -i $(docker ps | grep localstack | awk '{print $1}') mkdir /root/.aws"],
+#     shell=True, capture_output=True)
+# _res = subprocess.run(
+#     ["docker cp /tmp/config $(docker ps | grep localstack | awk '{print $1}'):/root/.aws/config"],
+#     shell=True, capture_output=True)
+# if _res.returncode != 0:
+#     print("\nError in copying localstck aws config file to localstack container\n")
+#     print(_res.stderr.decode('utf-8'))
+# else:
+#     pass
 
 print("### Init component submodules........")
 subprocess.run('git submodule init', shell=True, capture_output=True)
