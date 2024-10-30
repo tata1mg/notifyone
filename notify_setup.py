@@ -73,6 +73,9 @@ if _res.returncode != 0:
 else:
     pass
 _res = subprocess.run(
+    ["docker exec -i $(docker ps | grep localstack | awk '{print $1}') mkdir /root/.aws"],
+    shell=True, capture_output=True)
+_res = subprocess.run(
     ["docker cp /tmp/config $(docker ps | grep localstack | awk '{print $1}'):/root/.aws/config"],
     shell=True, capture_output=True)
 if _res.returncode != 0:
