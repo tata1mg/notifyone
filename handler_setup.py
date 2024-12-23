@@ -20,10 +20,12 @@ def setup_handler(sys_platform):
         _handler_queue_names = extract_values(_handler_config, "QUEUE_NAME")
         _port = str(_handler_config.get("PORT") or 9403)
         if platform.lower() == 'darwin':
+            _handler_config["NOTIFYONE_CORE"]["HOST"] = 'http://host.docker.internal:9402'
             _handler_config['SQS_AUTH']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:4566'
             with open('config.json', 'w') as f:
                 json.dump(_handler_config, f)
         elif platform.lower() == "linux":
+            _handler_config["NOTIFYONE_CORE"]["HOST"] = 'http://notifyone-core:9402'
             _handler_config['SQS_AUTH']['SQS_ENDPOINT_URL'] = 'http://localstack-main:4566'
             with open('config.json', 'w') as f:
                 json.dump(_handler_config, f)

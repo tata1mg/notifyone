@@ -8,6 +8,7 @@ from handler_setup import setup_handler
 from dashboard_setup import setup_dashboard
 
 sys_platform = sys.argv[1] if len(sys.argv) > 1 else "linux/amd64"
+cms_api_endpoint = sys.argv[2] if len(sys.argv) > 2 else ""
 
 print("Building for system platform - {}".format(sys_platform))
 
@@ -52,12 +53,36 @@ if _res.returncode != 0:
 else:
     pass
 
+
+
 _localstack_start_res = subprocess.run(['localstack start -d'], shell=True, capture_output=True)
 if _localstack_start_res.returncode != 0:
     print(str(_localstack_start_res.stderr.decode('utf-8')))
     exit(1)
 else:
     pass
+
+# print("setup aws default region to eu-west-2")
+# _res = subprocess.run(["rm /tmp/config"],
+#                       shell=True, capture_output=True)
+# _res = subprocess.run(['touch /tmp/config | echo "[default]" >> /tmp/config | echo "region=eu-west-2" >> /tmp/config'],
+#                       shell=True, capture_output=True)
+# if _res.returncode != 0:
+#     print("\nError in creating localstck aws config file\n")
+#     print(_res.stderr.decode('utf-8'))
+# else:
+#     pass
+# _res = subprocess.run(
+#     ["docker exec -i $(docker ps | grep localstack | awk '{print $1}') mkdir /root/.aws"],
+#     shell=True, capture_output=True)
+# _res = subprocess.run(
+#     ["docker cp /tmp/config $(docker ps | grep localstack | awk '{print $1}'):/root/.aws/config"],
+#     shell=True, capture_output=True)
+# if _res.returncode != 0:
+#     print("\nError in copying localstck aws config file to localstack container\n")
+#     print(_res.stderr.decode('utf-8'))
+# else:
+#     pass
 
 print("### Init component submodules........")
 subprocess.run('git submodule init', shell=True, capture_output=True)
@@ -90,7 +115,7 @@ setup_handler(sys_platform)
 
 os.chdir('../')
 
-setup_dashboard(sys_platform)
+setup_dashboard(sys_platform, cms_api_endpoint)
 
 os.chdir('../')
 
@@ -99,6 +124,14 @@ if platform == "linux":
     subprocess.run('docker network connect notifyone-network notifyone-core', shell=True, capture_output=True)
     subprocess.run('docker network connect notifyone-network notifyone-handler', shell=True, capture_output=True)
     subprocess.run('docker network connect notifyone-network notifyone-dashboard', shell=True, capture_output=True)
+
+_res = subprocess.run(["docker exec -i $(docker ps | grep notifyone-core | awk '{print $1}') python3 database.py upgrade "],
+                          shell=True, capture_output=True)
+if _res.returncode != 0:
+    print("\nError in DB upgrade\n")
+    print(_res.stderr.decode('utf-8'))
+else:
+    print("\nDB upgrade Successful\n")
 
 print('##### Congratulations! NotifyOne system setup Completed #####')
 print('Service Hosts - \n\t notifyone-dashboard : http://localhost:8001 \n\t notifyone-gateway : http://localhost:9401 \n\t notifyone-core : http://localhost:9402 \n\t notifyone-handler : http://localhost:9403')

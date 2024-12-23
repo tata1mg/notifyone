@@ -37,7 +37,7 @@ def setup_core(sys_platform):
 
     # create local stack queues
     for _q in _core_queue_names:
-        _res = subprocess.run(["docker exec -i $(docker ps | grep localstack | awk '{print $1}') awslocal sqs create-queue --queue-name " + _q],
+        _res = subprocess.run(["docker exec -i $(docker ps | grep localstack | awk '{print $1}') awslocal sqs create-queue --region eu-west-2 --queue-name " + _q],
                               shell=True, capture_output=True)
         if _res.returncode != 0:
             print("\nError in creating queue {}\n".format(_q))
