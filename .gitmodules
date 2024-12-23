@@ -7,3 +7,6 @@
 [submodule "notifyone-handler"]
 	path = notifyone-handler
 	url = https://github.com/tata1mg/notifyone-handler
+[submodule "notifyone-dashboard"]
+	path = notifyone-dashboard
+	url = https://github.com/tata1mg/notifyone-dashboard.git
