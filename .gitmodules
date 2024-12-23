@@ -4,9 +4,9 @@
 [submodule "notifyone-core"]
 	path = notifyone-core
 	url = https://github.com/tata1mg/notifyone-core
-[submodule "notifyone-handler"]
-	path = notifyone-handler
-	url = https://github.com/tata1mg/notifyone-handler
 [submodule "notifyone-dashboard"]
 	path = notifyone-dashboard
 	url = https://github.com/tata1mg/notifyone-dashboard.git
+[submodule "notifyone-handler"]
+	path = notifyone-handler
+	url = https://github.com/tata1mg/notifyone-handler.git
