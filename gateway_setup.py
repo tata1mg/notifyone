@@ -1,6 +1,7 @@
 import subprocess
 import json
 import os
+import boto3
 from utils import extract_values
 from sys import platform
 
@@ -21,24 +22,30 @@ def setup_gateway(sys_platform):
         _gateway_queue_names = extract_values(_gateway_config, "QUEUE_NAME")
         if platform.lower() == 'darwin':
             _gateway_config['NOTIFICATION_SERVICE']['HOST'] = 'http://host.docker.internal:9402'
-            _gateway_config['TRIGGER_NOTIFICATIONS']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:4566'
+            _gateway_config['TRIGGER_NOTIFICATIONS']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:5000'
             with open('config.json', 'w') as f:
                 json.dump(_gateway_config, f)
         elif platform.lower() == "linux":
             _gateway_config['NOTIFICATION_SERVICE']['HOST'] = 'http://notifyone-core:9402'
-            _gateway_config['TRIGGER_NOTIFICATIONS']['SQS']['SQS_ENDPOINT_URL'] = 'http://localstack-main:4566'
+            _gateway_config['TRIGGER_NOTIFICATIONS']['SQS']['SQS_ENDPOINT_URL'] = 'http://moto-server:5000'
             with open('config.json', 'w') as f:
                 json.dump(_gateway_config, f)
 
-    # create local stack queues
+    # create sqs queues
+    _sqs_endpoint = 'http://localhost:5000' if platform.lower() == 'darwin' else 'http://moto-server:5000'
+    sqs = boto3.client(
+        'sqs',
+        endpoint_url=_sqs_endpoint,
+        region_name='us-east-1',
+        aws_access_key_id='test',       # non-secret placeholder — moto accepts any non-empty string
+        aws_secret_access_key='test',   # non-secret placeholder
+    )
     for _q in _gateway_queue_names:
-        _res = subprocess.run(["docker exec -i $(docker ps | grep localstack | awk '{print $1}') awslocal sqs create-queue --queue-name " + _q],
-                              shell=True, capture_output=True)
-        if _res.returncode != 0:
-            print("\nError in creating queue {}\n".format(_q))
-            print(_res.stderr.decode('utf-8'))
-        else:
-            pass
+        try:
+            sqs.create_queue(QueueName=_q)
+            print(f"Created queue: {_q}")
+        except Exception as e:
+            print(f"Error creating queue {_q}: {e}")
 
     _stat = subprocess.run(['docker rm --force notifyone-gateway'], shell=True)
     _stat = subprocess.run(["docker image rm notifyone-gateway"], shell=True)
