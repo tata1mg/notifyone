@@ -1,0 +1,19 @@
+notify_setup.py
+  s_f9c7b28a7c5633::t_d718acbf07dd89 44-50,52-56,58-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "05fcfaa9df0d81e17c04f822a75360481b7ac250",
+  "prompts": {},
+  "sessions": {
+    "s_f9c7b28a7c5633": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d663d8c1-3e20-4e60-8646-87d35263470e",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Prashant Mishra <prashantmishra@L9KXW927K6local-781.local>"
+    }
+  }
+}
