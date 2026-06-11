@@ -19,26 +19,38 @@ def setup_handler(sys_platform):
         _handler_config = json.load(c)
         _handler_queue_names = extract_values(_handler_config, "QUEUE_NAME")
         _port = str(_handler_config.get("PORT") or 9403)
+        _queue_backend = _handler_config.get("QUEUE_BACKEND", "sqs").lower()
+
         if platform.lower() == 'darwin':
             _handler_config["NOTIFYONE_CORE"]["HOST"] = 'http://host.docker.internal:9402'
-            _handler_config['SQS_AUTH']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:4566'
+            if _queue_backend == "kafka":
+                _handler_config['KAFKA_AUTH']['BOOTSTRAP_SERVERS'] = 'host.docker.internal:9092'
+            else:
+                _handler_config['SQS_AUTH']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:4566'
             with open('config.json', 'w') as f:
                 json.dump(_handler_config, f)
         elif platform.lower() == "linux":
             _handler_config["NOTIFYONE_CORE"]["HOST"] = 'http://notifyone-core:9402'
-            _handler_config['SQS_AUTH']['SQS_ENDPOINT_URL'] = 'http://localstack-main:4566'
+            if _queue_backend == "kafka":
+                _handler_config['KAFKA_AUTH']['BOOTSTRAP_SERVERS'] = 'kafka-notifyone:9092'
+            else:
+                _handler_config['SQS_AUTH']['SQS_ENDPOINT_URL'] = 'http://localstack-main:4566'
             with open('config.json', 'w') as f:
                 json.dump(_handler_config, f)
 
-    # create local stack queues
-    for _q in _handler_queue_names:
-        _res = subprocess.run(["docker exec -i $(docker ps | grep localstack | awk '{print $1}') awslocal sqs create-queue --queue-name " + _q],
-                              shell=True, capture_output=True)
-        if _res.returncode != 0:
-            print("\nError in creating queue {}\n".format(_q))
-            print(_res.stderr.decode('utf-8'))
-        else:
-            pass
+    if _queue_backend == "kafka":
+        from kafka_setup import create_kafka_topics
+        create_kafka_topics(_handler_queue_names)
+    else:
+        # create local stack queues
+        for _q in _handler_queue_names:
+            _res = subprocess.run(["docker exec -i $(docker ps | grep localstack | awk '{print $1}') awslocal sqs create-queue --queue-name " + _q],
+                                  shell=True, capture_output=True)
+            if _res.returncode != 0:
+                print("\nError in creating queue {}\n".format(_q))
+                print(_res.stderr.decode('utf-8'))
+            else:
+                pass
 
     _stat = subprocess.run(['docker rm --force notifyone-handler'], shell=True)
     _stat = subprocess.run(["docker image rm notifyone-handler"], shell=True)
