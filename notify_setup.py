@@ -1,6 +1,8 @@
 import subprocess
 import os
 import sys
+import time
+import urllib.request
 from sys import platform
 from gateway_setup import setup_gateway
 from core_setup import setup_core
@@ -38,51 +40,38 @@ if _res.returncode != 0:
     exit(1)
 
 
-print("\n Setting up localstack\n")
-# install localstack
-_res = subprocess.run(['localstack --version'], shell=True, capture_output=True)
-if _res.returncode != 0:
-    print("Localstack not installed \n"+(str(_docker_check_res.stderr.decode('utf-8'))))
-    print("\n installing localstack \n")
-    _localstack_res = subprocess.run(['python3 -m pip install --force-reinstall localstack'], shell=True, capture_output=True)
-    if _localstack_res.returncode != 0:
-        print(str(_localstack_res.stderr.decode('utf-8')))
+print("\n Setting up moto-server\n")
+_moto_already_up = False
+try:
+    urllib.request.urlopen("http://localhost:15000")
+    _moto_already_up = True
+    print("moto-server already running on port 5000, skipping start.")
+except Exception:
+    pass
+
+if not _moto_already_up:
+    _res = subprocess.run(['docker pull motoserver/moto'], shell=True, capture_output=True)
+    if _res.returncode != 0:
+        print(str(_res.stderr.decode('utf-8')))
         exit(1)
+
+    subprocess.run(['docker rm --force moto-server'], shell=True, capture_output=True)
+    _res = subprocess.run(['docker run -p 15000:5000 --detach --name moto-server motoserver/moto'], shell=True, capture_output=True)
+    if _res.returncode != 0:
+        print(str(_res.stderr.decode('utf-8')))
+        exit(1)
+
+    print("Waiting for moto-server to be ready...")
+    for _ in range(30):
+        try:
+            urllib.request.urlopen("http://localhost:15000")
+            print("moto-server is ready.")
+            break
+        except Exception:
+            time.sleep(1)
     else:
-        pass
-else:
-    pass
-
-
-
-_localstack_start_res = subprocess.run(['localstack start -d'], shell=True, capture_output=True)
-if _localstack_start_res.returncode != 0:
-    print(str(_localstack_start_res.stderr.decode('utf-8')))
-    exit(1)
-else:
-    pass
-
-# print("setup aws default region to eu-west-2")
-# _res = subprocess.run(["rm /tmp/config"],
-#                       shell=True, capture_output=True)
-# _res = subprocess.run(['touch /tmp/config | echo "[default]" >> /tmp/config | echo "region=eu-west-2" >> /tmp/config'],
-#                       shell=True, capture_output=True)
-# if _res.returncode != 0:
-#     print("\nError in creating localstck aws config file\n")
-#     print(_res.stderr.decode('utf-8'))
-# else:
-#     pass
-# _res = subprocess.run(
-#     ["docker exec -i $(docker ps | grep localstack | awk '{print $1}') mkdir /root/.aws"],
-#     shell=True, capture_output=True)
-# _res = subprocess.run(
-#     ["docker cp /tmp/config $(docker ps | grep localstack | awk '{print $1}'):/root/.aws/config"],
-#     shell=True, capture_output=True)
-# if _res.returncode != 0:
-#     print("\nError in copying localstck aws config file to localstack container\n")
-#     print(_res.stderr.decode('utf-8'))
-# else:
-#     pass
+        print("ERROR: moto-server failed to start or port 5000 is unreachable.")
+        exit(1)
 
 print("### Init component submodules........")
 subprocess.run('git submodule init', shell=True, capture_output=True)
@@ -101,7 +90,7 @@ if platform == "linux":
     subprocess.run('docker network create notifyone-network', shell=True, capture_output=True)
     subprocess.run('docker network connect notifyone-network postgres_notify', shell=True, capture_output=True)
     subprocess.run('docker network connect notifyone-network redis_notify', shell=True, capture_output=True)
-    subprocess.run('docker network connect notifyone-network localstack-main', shell=True, capture_output=True)
+    subprocess.run('docker network connect notifyone-network moto-server', shell=True, capture_output=True)
 
 setup_gateway(sys_platform)
 
