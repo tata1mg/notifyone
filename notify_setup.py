@@ -1,6 +1,7 @@
 import subprocess
 import os
 import sys
+import json
 from sys import platform
 from gateway_setup import setup_gateway
 from core_setup import setup_core
@@ -38,51 +39,50 @@ if _res.returncode != 0:
     exit(1)
 
 
-print("\n Setting up localstack\n")
-# install localstack
-_res = subprocess.run(['localstack --version'], shell=True, capture_output=True)
-if _res.returncode != 0:
-    print("Localstack not installed \n"+(str(_docker_check_res.stderr.decode('utf-8'))))
-    print("\n installing localstack \n")
-    _localstack_res = subprocess.run(['python3 -m pip install --force-reinstall localstack'], shell=True, capture_output=True)
-    if _localstack_res.returncode != 0:
-        print(str(_localstack_res.stderr.decode('utf-8')))
+# Detect queue backend from handler config_template.json (representative single source)
+def _detect_queue_backend():
+    handler_config_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        "notifyone-handler",
+        "config_template.json",
+    )
+    try:
+        with open(handler_config_path, "r") as f:
+            cfg = json.load(f)
+        return cfg.get("QUEUE_BACKEND", "sqs").lower()
+    except Exception:
+        return "sqs"
+
+
+_queue_backend = _detect_queue_backend()
+
+if _queue_backend == "kafka":
+    print("\n Setting up Kafka on Docker\n")
+    from kafka_setup import setup_kafka_container
+    setup_kafka_container(sys_platform)
+else:
+    print("\n Setting up localstack\n")
+    # install localstack
+    _res = subprocess.run(['localstack --version'], shell=True, capture_output=True)
+    if _res.returncode != 0:
+        print("Localstack not installed \n"+(str(_docker_check_res.stderr.decode('utf-8'))))
+        print("\n installing localstack \n")
+        _localstack_res = subprocess.run(['python3 -m pip install --force-reinstall localstack'], shell=True, capture_output=True)
+        if _localstack_res.returncode != 0:
+            print(str(_localstack_res.stderr.decode('utf-8')))
+            exit(1)
+        else:
+            pass
+    else:
+        pass
+
+    _localstack_start_res = subprocess.run(['localstack start -d'], shell=True, capture_output=True)
+    if _localstack_start_res.returncode != 0:
+        print(str(_localstack_start_res.stderr.decode('utf-8')))
         exit(1)
     else:
         pass
-else:
-    pass
 
-
-
-_localstack_start_res = subprocess.run(['localstack start -d'], shell=True, capture_output=True)
-if _localstack_start_res.returncode != 0:
-    print(str(_localstack_start_res.stderr.decode('utf-8')))
-    exit(1)
-else:
-    pass
-
-# print("setup aws default region to eu-west-2")
-# _res = subprocess.run(["rm /tmp/config"],
-#                       shell=True, capture_output=True)
-# _res = subprocess.run(['touch /tmp/config | echo "[default]" >> /tmp/config | echo "region=eu-west-2" >> /tmp/config'],
-#                       shell=True, capture_output=True)
-# if _res.returncode != 0:
-#     print("\nError in creating localstck aws config file\n")
-#     print(_res.stderr.decode('utf-8'))
-# else:
-#     pass
-# _res = subprocess.run(
-#     ["docker exec -i $(docker ps | grep localstack | awk '{print $1}') mkdir /root/.aws"],
-#     shell=True, capture_output=True)
-# _res = subprocess.run(
-#     ["docker cp /tmp/config $(docker ps | grep localstack | awk '{print $1}'):/root/.aws/config"],
-#     shell=True, capture_output=True)
-# if _res.returncode != 0:
-#     print("\nError in copying localstck aws config file to localstack container\n")
-#     print(_res.stderr.decode('utf-8'))
-# else:
-#     pass
 
 print("### Init component submodules........")
 subprocess.run('git submodule init', shell=True, capture_output=True)
@@ -101,7 +101,10 @@ if platform == "linux":
     subprocess.run('docker network create notifyone-network', shell=True, capture_output=True)
     subprocess.run('docker network connect notifyone-network postgres_notify', shell=True, capture_output=True)
     subprocess.run('docker network connect notifyone-network redis_notify', shell=True, capture_output=True)
-    subprocess.run('docker network connect notifyone-network localstack-main', shell=True, capture_output=True)
+    if _queue_backend == "kafka":
+        subprocess.run('docker network connect notifyone-network kafka-notifyone', shell=True, capture_output=True)
+    else:
+        subprocess.run('docker network connect notifyone-network localstack-main', shell=True, capture_output=True)
 
 setup_gateway(sys_platform)
 

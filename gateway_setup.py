@@ -19,26 +19,39 @@ def setup_gateway(sys_platform):
         _gateway_config = json.load(c)
         _gateway_port = str(_gateway_config.get("PORT") or 9401)
         _gateway_queue_names = extract_values(_gateway_config, "QUEUE_NAME")
+
+        _queue_backend = _gateway_config.get("TRIGGER_NOTIFICATIONS", {}).get("QUEUE_BACKEND", "sqs").lower()
+
         if platform.lower() == 'darwin':
             _gateway_config['NOTIFICATION_SERVICE']['HOST'] = 'http://host.docker.internal:9402'
-            _gateway_config['TRIGGER_NOTIFICATIONS']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:4566'
+            if _queue_backend == "kafka":
+                _gateway_config['TRIGGER_NOTIFICATIONS']['KAFKA']['BOOTSTRAP_SERVERS'] = 'host.docker.internal:{}'.format(9092)
+            else:
+                _gateway_config['TRIGGER_NOTIFICATIONS']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:4566'
             with open('config.json', 'w') as f:
                 json.dump(_gateway_config, f)
         elif platform.lower() == "linux":
             _gateway_config['NOTIFICATION_SERVICE']['HOST'] = 'http://notifyone-core:9402'
-            _gateway_config['TRIGGER_NOTIFICATIONS']['SQS']['SQS_ENDPOINT_URL'] = 'http://localstack-main:4566'
+            if _queue_backend == "kafka":
+                _gateway_config['TRIGGER_NOTIFICATIONS']['KAFKA']['BOOTSTRAP_SERVERS'] = 'kafka-notifyone:9092'
+            else:
+                _gateway_config['TRIGGER_NOTIFICATIONS']['SQS']['SQS_ENDPOINT_URL'] = 'http://localstack-main:4566'
             with open('config.json', 'w') as f:
                 json.dump(_gateway_config, f)
 
-    # create local stack queues
-    for _q in _gateway_queue_names:
-        _res = subprocess.run(["docker exec -i $(docker ps | grep localstack | awk '{print $1}') awslocal sqs create-queue --queue-name " + _q],
-                              shell=True, capture_output=True)
-        if _res.returncode != 0:
-            print("\nError in creating queue {}\n".format(_q))
-            print(_res.stderr.decode('utf-8'))
-        else:
-            pass
+    if _queue_backend == "kafka":
+        from kafka_setup import create_kafka_topics
+        create_kafka_topics(_gateway_queue_names)
+    else:
+        # create local stack queues
+        for _q in _gateway_queue_names:
+            _res = subprocess.run(["docker exec -i $(docker ps | grep localstack | awk '{print $1}') awslocal sqs create-queue --queue-name " + _q],
+                                  shell=True, capture_output=True)
+            if _res.returncode != 0:
+                print("\nError in creating queue {}\n".format(_q))
+                print(_res.stderr.decode('utf-8'))
+            else:
+                pass
 
     _stat = subprocess.run(['docker rm --force notifyone-gateway'], shell=True)
     _stat = subprocess.run(["docker image rm notifyone-gateway"], shell=True)
