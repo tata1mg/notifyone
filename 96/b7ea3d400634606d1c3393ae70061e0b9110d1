@@ -1,0 +1,23 @@
+handler_setup.py
+  s_f9c7b28a7c5633::t_6abeb0978cdb26 35
+core_setup.py
+  s_f9c7b28a7c5633::t_5f07ef5dbcfd88 40
+gateway_setup.py
+  s_f9c7b28a7c5633::t_b7a10d74e59528 35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "96b7ea3d400634606d1c3393ae70061e0b9110d1",
+  "prompts": {},
+  "sessions": {
+    "s_f9c7b28a7c5633": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d663d8c1-3e20-4e60-8646-87d35263470e",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Prashant Mishra <prashantmishra@L9KXW927K6local-781.local>"
+    }
+  }
+}
