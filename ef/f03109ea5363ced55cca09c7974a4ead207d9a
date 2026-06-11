@@ -1,0 +1,30 @@
+gateway_setup.py
+  s_f9c7b28a7c5633::t_1055042e4e2836 25
+  s_f9c7b28a7c5633::t_8b055dd93f9cd5 35
+handler_setup.py
+  s_f9c7b28a7c5633::t_e056e391ca9f23 25
+  s_f9c7b28a7c5633::t_4bb83900e21d63 35
+notify_setup.py
+  s_f9c7b28a7c5633::t_c0d2d3e9de8cb5 67
+  s_f9c7b28a7c5633::t_958439eeb6d495 46
+  s_f9c7b28a7c5633::t_8abc131480b8d1 59
+core_setup.py
+  s_f9c7b28a7c5633::t_ee9f55633c5a61 24-26
+  s_f9c7b28a7c5633::t_79ddfa9efca037 40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "eff03109ea5363ced55cca09c7974a4ead207d9a",
+  "prompts": {},
+  "sessions": {
+    "s_f9c7b28a7c5633": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d663d8c1-3e20-4e60-8646-87d35263470e",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "Prashant Mishra <prashantmishra@L9KXW927K6local-781.local>"
+    }
+  }
+}
