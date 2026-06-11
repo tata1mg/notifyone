@@ -43,7 +43,7 @@ if _res.returncode != 0:
 print("\n Setting up moto-server\n")
 _moto_already_up = False
 try:
-    urllib.request.urlopen("http://localhost:5000")
+    urllib.request.urlopen("http://localhost:15000")
     _moto_already_up = True
     print("moto-server already running on port 5000, skipping start.")
 except Exception:
@@ -56,7 +56,7 @@ if not _moto_already_up:
         exit(1)
 
     subprocess.run(['docker rm --force moto-server'], shell=True, capture_output=True)
-    _res = subprocess.run(['docker run -p 5000:5000 --detach --name moto-server motoserver/moto'], shell=True, capture_output=True)
+    _res = subprocess.run(['docker run -p 15000:5000 --detach --name moto-server motoserver/moto'], shell=True, capture_output=True)
     if _res.returncode != 0:
         print(str(_res.stderr.decode('utf-8')))
         exit(1)
@@ -64,7 +64,7 @@ if not _moto_already_up:
     print("Waiting for moto-server to be ready...")
     for _ in range(30):
         try:
-            urllib.request.urlopen("http://localhost:5000")
+            urllib.request.urlopen("http://localhost:15000")
             print("moto-server is ready.")
             break
         except Exception:

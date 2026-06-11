@@ -22,7 +22,7 @@ def setup_gateway(sys_platform):
         _gateway_queue_names = extract_values(_gateway_config, "QUEUE_NAME")
         if platform.lower() == 'darwin':
             _gateway_config['NOTIFICATION_SERVICE']['HOST'] = 'http://host.docker.internal:9402'
-            _gateway_config['TRIGGER_NOTIFICATIONS']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:5000'
+            _gateway_config['TRIGGER_NOTIFICATIONS']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:15000'
             with open('config.json', 'w') as f:
                 json.dump(_gateway_config, f)
         elif platform.lower() == "linux":
@@ -32,7 +32,7 @@ def setup_gateway(sys_platform):
                 json.dump(_gateway_config, f)
 
     # create sqs queues
-    _sqs_endpoint = 'http://localhost:5000'
+    _sqs_endpoint = 'http://localhost:15000'
     sqs = boto3.client(
         'sqs',
         endpoint_url=_sqs_endpoint,

@@ -22,7 +22,7 @@ def setup_handler(sys_platform):
         _port = str(_handler_config.get("PORT") or 9403)
         if platform.lower() == 'darwin':
             _handler_config["NOTIFYONE_CORE"]["HOST"] = 'http://host.docker.internal:9402'
-            _handler_config['SQS_AUTH']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:5000'
+            _handler_config['SQS_AUTH']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:15000'
             with open('config.json', 'w') as f:
                 json.dump(_handler_config, f)
         elif platform.lower() == "linux":
@@ -32,7 +32,7 @@ def setup_handler(sys_platform):
                 json.dump(_handler_config, f)
 
     # create sqs queues
-    _sqs_endpoint = 'http://localhost:5000'
+    _sqs_endpoint = 'http://localhost:15000'
     sqs = boto3.client(
         'sqs',
         endpoint_url=_sqs_endpoint,

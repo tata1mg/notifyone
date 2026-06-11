@@ -21,9 +21,9 @@ def setup_core(sys_platform):
         _port = str(_core_config.get("PORT") or 9402)
         if platform.lower() == 'darwin':
             _core_config['DB_CONNECTIONS']['connections']['default']['credentials']['host'] = 'host.docker.internal'
-            _core_config['SUBSCRIBE_NOTIFICATION_STATUS_UPDATES']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:5000'
-            _core_config['DISPATCH_NOTIFICATION_REQUEST']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:5000'
-            _core_config['NOTIFICATION_REQUEST']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:5000'
+            _core_config['SUBSCRIBE_NOTIFICATION_STATUS_UPDATES']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:15000'
+            _core_config['DISPATCH_NOTIFICATION_REQUEST']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:15000'
+            _core_config['NOTIFICATION_REQUEST']['SQS']['SQS_ENDPOINT_URL'] = 'http://host.docker.internal:15000'
             _core_config['REDIS_CACHE_HOSTS']['default']['REDIS_HOST'] = 'host.docker.internal'
             with open('config.json', 'w') as f:
                 json.dump(_core_config, f)
@@ -37,7 +37,7 @@ def setup_core(sys_platform):
                 json.dump(_core_config, f)
 
     # create sqs queues
-    _sqs_endpoint = 'http://localhost:5000'
+    _sqs_endpoint = 'http://localhost:15000'
     sqs = boto3.client(
         'sqs',
         endpoint_url=_sqs_endpoint,
