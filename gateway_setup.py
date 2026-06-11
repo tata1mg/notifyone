@@ -32,7 +32,7 @@ def setup_gateway(sys_platform):
                 json.dump(_gateway_config, f)
 
     # create sqs queues
-    _sqs_endpoint = 'http://localhost:5000' if platform.lower() == 'darwin' else 'http://moto-server:5000'
+    _sqs_endpoint = 'http://localhost:5000'
     sqs = boto3.client(
         'sqs',
         endpoint_url=_sqs_endpoint,
